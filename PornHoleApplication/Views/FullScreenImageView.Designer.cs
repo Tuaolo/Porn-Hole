@@ -1,7 +1,7 @@
 ﻿using System.Windows.Forms;
-namespace WindowsFormsApplication1
+namespace PornHole.Views
 {
-    partial class FullScreenImage
+    partial class FullScreenImageView
     {
         /// <summary>
         /// Required designer variable.
