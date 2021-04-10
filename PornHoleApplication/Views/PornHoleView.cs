@@ -128,6 +128,11 @@ namespace PornHole.Views
             controller.setIncludeSubdirs(chkSubdirs.Checked);
         }
 
+        private void PornHoleView_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            controller.exitApp();
+        }
+
         #endregion
     }
 }

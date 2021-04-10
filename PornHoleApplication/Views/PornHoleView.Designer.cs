@@ -248,6 +248,7 @@
             this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "PornHoleView";
             this.Text = "Porn Hole";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.PornHoleView_FormClosed);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).EndInit();

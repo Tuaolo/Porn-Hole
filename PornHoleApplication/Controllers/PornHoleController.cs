@@ -44,6 +44,11 @@ namespace PornHole.Controllers
             this.timer.Tick += new System.EventHandler(this.timer_Tick);
         }
 
+        public void exitApp()
+        {
+            Application.Exit();
+        }
+
         #region Setters
         public void setDirectory(String directory)
         {
