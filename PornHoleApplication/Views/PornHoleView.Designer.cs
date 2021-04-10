@@ -1,6 +1,6 @@
-﻿namespace WindowsFormsApplication1
+﻿namespace PornHole.Views
 {
-    partial class PornHoleController
+    partial class PornHoleView
     {
         /// <summary>
         /// Required designer variable.
@@ -28,9 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PornHoleController));
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PornHoleView));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.lblExitFullScreen = new System.Windows.Forms.Label();
             this.btnFromPaused = new System.Windows.Forms.Button();
             this.btnFromHere = new System.Windows.Forms.Button();
             this.btnNext = new System.Windows.Forms.Button();
@@ -44,9 +44,7 @@
             this.lblInterval = new System.Windows.Forms.Label();
             this.numInterval = new System.Windows.Forms.NumericUpDown();
             this.pictureBox = new System.Windows.Forms.PictureBox();
-            this.timer = new System.Windows.Forms.Timer(this.components);
             this.folderBrowser = new System.Windows.Forms.OpenFileDialog();
-            this.lblExitFullScreen = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -73,6 +71,15 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(316, 296);
             this.panel1.TabIndex = 0;
+            // 
+            // lblExitFullScreen
+            // 
+            this.lblExitFullScreen.AutoSize = true;
+            this.lblExitFullScreen.Location = new System.Drawing.Point(66, 280);
+            this.lblExitFullScreen.Name = "lblExitFullScreen";
+            this.lblExitFullScreen.Size = new System.Drawing.Size(185, 13);
+            this.lblExitFullScreen.TabIndex = 12;
+            this.lblExitFullScreen.Text = "*ESC or Right-Click to exit Full Screen";
             // 
             // btnFromPaused
             // 
@@ -127,6 +134,7 @@
             this.chkSubdirs.Text = "Include Subdirs";
             this.chkSubdirs.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSubdirs.UseVisualStyleBackColor = true;
+            this.chkSubdirs.CheckedChanged += new System.EventHandler(this.chkSubdirs_CheckedChanged);
             // 
             // btnFullScreen
             // 
@@ -222,10 +230,6 @@
             this.pictureBox.TabIndex = 1;
             this.pictureBox.TabStop = false;
             // 
-            // timer
-            // 
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
-            // 
             // folderBrowser
             // 
             this.folderBrowser.CheckFileExists = false;
@@ -233,16 +237,7 @@
             this.folderBrowser.ValidateNames = false;
             this.folderBrowser.FileOk += new System.ComponentModel.CancelEventHandler(this.folderBrowser_FileOk);
             // 
-            // lblExitFullScreen
-            // 
-            this.lblExitFullScreen.AutoSize = true;
-            this.lblExitFullScreen.Location = new System.Drawing.Point(66, 280);
-            this.lblExitFullScreen.Name = "lblExitFullScreen";
-            this.lblExitFullScreen.Size = new System.Drawing.Size(185, 13);
-            this.lblExitFullScreen.TabIndex = 12;
-            this.lblExitFullScreen.Text = "*ESC or Right-Click to exit Full Screen";
-            // 
-            // PornHoleController
+            // PornHoleView
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -251,7 +246,7 @@
             this.Controls.Add(this.panel1);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(2);
-            this.Name = "PornHoleController";
+            this.Name = "PornHoleView";
             this.Text = "Porn Hole";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
@@ -268,7 +263,6 @@
         private System.Windows.Forms.Button btnShow;
         private System.Windows.Forms.Label lblInterval;
         private System.Windows.Forms.NumericUpDown numInterval;
-        private System.Windows.Forms.Timer timer;
         private System.Windows.Forms.Label lblDirectory;
         private System.Windows.Forms.Button btnSelectFolder;
         private System.Windows.Forms.TextBox txtDirectory;

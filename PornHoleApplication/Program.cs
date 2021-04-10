@@ -1,9 +1,11 @@
-﻿using System;
+﻿using PornHole.Controllers;
+using PornHole.Views;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace WindowsFormsApplication1
+namespace PornHole
 {
     static class Program
     {
@@ -15,7 +17,9 @@ namespace WindowsFormsApplication1
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new PornHoleController());
+            PornHoleView pornHoleView = new PornHoleView();
+            FullScreenImageView fullScreenImageView = new FullScreenImageView();
+            Application.Run(new PornHoleController(pornHoleView, fullScreenImageView));
         }
     }
 }

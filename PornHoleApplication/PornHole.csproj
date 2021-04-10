@@ -49,10 +49,11 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>pornhole.ico</ApplicationIcon>
+    <ApplicationIcon>Images\pornhole.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Activities" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -64,26 +65,29 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="FullScreenImage.cs">
+    <Compile Include="Controllers\PornHoleController.cs" />
+    <Compile Include="Views\FullScreenImageView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="FullScreenImage.Designer.cs">
-      <DependentUpon>FullScreenImage.cs</DependentUpon>
+    <Compile Include="Views\FullScreenImageView.Designer.cs">
+      <DependentUpon>FullScreenImageView.cs</DependentUpon>
     </Compile>
-    <Compile Include="ImageInfo.cs" />
-    <Compile Include="PornHoleController.cs">
+    <Compile Include="Models\ImageInfo.cs" />
+    <Compile Include="Views\PornHoleView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="PornHoleController.Designer.cs">
-      <DependentUpon>PornHoleController.cs</DependentUpon>
+    <Compile Include="Views\PornHoleView.Designer.cs">
+      <DependentUpon>PornHoleView.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <EmbeddedResource Include="FullScreenImage.resx">
-      <DependentUpon>FullScreenImage.cs</DependentUpon>
+    <Compile Include="Controllers\IFullScreenImageView.cs" />
+    <Compile Include="Controllers\IPornHoleView.cs" />
+    <EmbeddedResource Include="Views\FullScreenImageView.resx">
+      <DependentUpon>FullScreenImageView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="PornHoleController.resx">
-      <DependentUpon>PornHoleController.cs</DependentUpon>
+    <EmbeddedResource Include="Views\PornHoleView.resx">
+      <DependentUpon>PornHoleView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -128,8 +132,9 @@
     </BootstrapperPackage>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="pornhole.ico" />
+    <Content Include="Images\pornhole.ico" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -1,20 +1,22 @@
-﻿using System;
+﻿using PornHole.Models;
+using System;
+using System.Activities;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows.Forms;
-using System.IO;
-using System.Diagnostics;
-using System.Threading;
-using PornHole;
 
-namespace WindowsFormsApplication1
+namespace PornHole.Controllers
 {
-    public partial class PornHoleController : Form
+    public class PornHoleController : ApplicationContext
     {
+        private IPornHoleView pornHoleView;
+        private IFullScreenImageView fullScreenImageView;
+        
+        private bool fullScreenVisible = false;
+
         private Random randnum = new Random();
         private FileInfo[] fileArray;
         private LinkedList<ImageInfo> currentImageList;
@@ -22,16 +24,42 @@ namespace WindowsFormsApplication1
         private LinkedListNode<ImageInfo> currentNode;
         private LinkedListNode<ImageInfo> manualNode;
         private String currentDir = "";
-        private bool currentSubdirCheck = false;
-        private FullScreenImage fullScreenImage;
+        private String newDir;
+        private bool currentIncludeSubdirs = false;
+        private bool newIncludeSubdirs;
+        private Timer timer = new Timer();
+        private bool showPlaying = false;
 
-        public PornHoleController()
+        public PornHoleController(IPornHoleView pornHoleView, IFullScreenImageView fullScreenImageView)
         {
-            InitializeComponent();
+            this.pornHoleView = pornHoleView;
+            this.fullScreenImageView = fullScreenImageView;
 
-            //set the initial timer value
-            timer.Interval = ((int)numInterval.Value) * 1000;
+            pornHoleView.setController(this);
+            fullScreenImageView.setController(this);
+
+            pornHoleView.setVisible(true);
+            fullScreenImageView.setVisible(fullScreenVisible);
+
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
         }
+
+        #region Setters
+        public void setDirectory(String directory)
+        {
+            newDir = directory;
+        }
+
+        public void setIncludeSubdirs(bool includeSubdirs)
+        {
+            newIncludeSubdirs = includeSubdirs;
+        }
+
+        public void setTimerInterval(int seconds)
+        {
+            timer.Interval = seconds * 1000;
+        }
+        #endregion
 
         private void showNextImage()
         {
@@ -40,10 +68,10 @@ namespace WindowsFormsApplication1
                 // to be in here, we know we also have a currentNode and a currentImageList.
                 // If not, something is very wrong and we deserve to puke on any exceptions.
 
-                // if we've been browsing and we're back where we stopped the slideshow
-                // (or resuming from where we stopped browsing), move to the next image.
-                // otherwise do nothing (will show the image where the show was stopped as
-                // the next image and then continue)
+                // if we're back where we stopped the slideshow (or resuming from where we
+                // stopped browsing), move to the next image. otherwise do nothing (causing
+                // the "current" image from where we paused the slideshow to be shown next,
+                // effectively resuming from there)
                 if (manualNode == currentNode)
                 {
                     if (previousImageList != null && currentNode == previousImageList.Last)
@@ -63,6 +91,7 @@ namespace WindowsFormsApplication1
             }
             else if (currentImageList != null && currentNode != null)
             {
+                // If we're in the normal flow of the slideshow, just cycle to the next image
                 if (currentNode == currentImageList.Last)
                 {
                     currentNode = null;
@@ -76,8 +105,8 @@ namespace WindowsFormsApplication1
             // If we don't have a current image list or a current node, or a new directory has been selected,
             // or the option to include subdirs has changed, regenerate the list.
             if (currentImageList == null || currentImageList.Count == 0 || currentNode == null ||
-                (!currentDir.Equals(txtDirectory.Text, StringComparison.CurrentCultureIgnoreCase)) ||
-                !(chkSubdirs.Checked == currentSubdirCheck))
+                (!currentDir.Equals(newDir, StringComparison.CurrentCultureIgnoreCase)) ||
+                !(newIncludeSubdirs == currentIncludeSubdirs))
             {
                 loadRandomizedImageList();
             }
@@ -93,52 +122,19 @@ namespace WindowsFormsApplication1
 
             // grab the image key from the top of the list, set that image to the
             // mini-viewer and the full screen viewer (if the full screen viewer is active)
-            pictureBox.ImageLocation = currentNode.Value.ImagePath;
-            if (fullScreenImage != null)
-            {
-                fullScreenImage.FileLocation = currentNode.Value.ImagePath;
-            }
+            pornHoleView.setImage(currentNode.Value.ImagePath);
+            fullScreenImageView.setImage(currentNode.Value.ImagePath);
         }
 
         #region File Loading Functions
-
-        private bool loadFileList()
-        {
-            // read in the file list from the selected directory and subdirs (if applicable)
-            DirectoryInfo d = new DirectoryInfo(@txtDirectory.Text);
-            try
-            {
-                if (chkSubdirs.Checked)
-                {
-                    fileArray = d.GetFiles("*", SearchOption.AllDirectories);
-                }
-                else
-                {
-                    fileArray = d.GetFiles();
-                }
-                currentDir = txtDirectory.Text;
-                currentSubdirCheck = chkSubdirs.Checked;
-            }
-            catch
-            {
-                // if there's a failure, stop the slideshow
-                stopSlideShow();
-                MessageBox.Show("Error loading images. Review the directory/subdir checkbox and try again.",
-                    "Error Loading Images", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return false;
-            }
-
-            return true;
-        }
-
         private void loadRandomizedImageList()
         {
             // if the selected directory or the option to include subdirs has changed, 
             // read in all the files in the directory/ies
-            if (!currentDir.Equals(txtDirectory.Text, StringComparison.CurrentCultureIgnoreCase)
-                || !(chkSubdirs.Checked == currentSubdirCheck))
+            if (!currentDir.Equals(newDir, StringComparison.CurrentCultureIgnoreCase)
+                || !(newIncludeSubdirs == currentIncludeSubdirs))
             {
-                if(!loadFileList())
+                if (!loadFileList())
                 {
                     return;
                 }
@@ -161,17 +157,46 @@ namespace WindowsFormsApplication1
             currentNode = currentImageList.First;
         }
 
+        private bool loadFileList()
+        {
+            // read in the file list from the selected directory and subdirs (if applicable)
+            DirectoryInfo d = new DirectoryInfo(newDir);
+            try
+            {
+                if (newIncludeSubdirs)
+                {
+                    fileArray = d.GetFiles("*", SearchOption.AllDirectories);
+                }
+                else
+                {
+                    fileArray = d.GetFiles();
+                }
+                currentDir = newDir;
+                currentIncludeSubdirs = newIncludeSubdirs;
+            }
+            catch
+            {
+                // if there's a failure, stop the slideshow
+                stopSlideShow();
+                MessageBox.Show("Error loading images. Review the directory/subdir checkbox and try again.",
+                    "Error Loading Images", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return false;
+            }
+
+            return true;
+        }
+
         private void InsertSorted(ref LinkedList<ImageInfo> list, ref ImageInfo newNode)
         {
             // if the list is empty or the new node has the lowest value, add it first
-            if(list.First == null || list.First.Value.SortID > newNode.SortID)
+            if (list.First == null || list.First.Value.SortID > newNode.SortID)
             {
                 list.AddFirst(newNode);
                 return;
             }
 
             // if the new node has the largest value, insert last
-            if(list.Last.Value.SortID < newNode.SortID)
+            if (list.Last.Value.SortID < newNode.SortID)
             {
                 list.AddLast(newNode);
                 return;
@@ -180,54 +205,63 @@ namespace WindowsFormsApplication1
             // iterate through the nodes (starting from the second because we already know
             // it doesn't go before the first) and drop it in the appropriate place
             LinkedListNode<ImageInfo> compNode = list.First.Next;
-            while(compNode.Value.SortID < newNode.SortID)
+            while (compNode.Value.SortID < newNode.SortID)
             {
                 compNode = compNode.Next;
             }
 
             list.AddBefore(compNode, newNode);
         }
+        #endregion
+
+        #region Supporting Functions
+
+        public void startSlideShow()
+        {
+            pornHoleView.setControlsToPlaying();
+            fullScreenImageView.setControlsToPlaying();
+            if (currentNode == null)
+            {
+                showNextImage();
+            }
+            timer.Start();
+            showPlaying = true;
+        }
+
+        public void startSlideShowFromHere()
+        {
+            currentNode = manualNode;
+            startSlideShow();
+        }
+
+        public void stopSlideShow()
+        {
+            showPlaying = false;
+            timer.Stop();
+            pornHoleView.setControlsToPaused();
+            fullScreenImageView.setControlsToPaused();
+        }
+
+        public void showFullScreen(Point location)
+        {
+            fullScreenImageView.openAtLocation(location);
+            fullScreenVisible = true;
+        }
+
+        public void hideFullScreen()
+        {
+            fullScreenVisible = false;
+        }
 
         #endregion
-        
-        #region Button Click Event Handlers
 
-        private void btnSelectFolder_Click(object sender, EventArgs e)
-        {
-            //open the file browser
-            folderBrowser.ShowDialog();
-        }
+        #region Button Clicked Event Handlers
 
-        public void btnShow_Click(object sender, EventArgs e)
-        {
-            // If a directory has been selected and the user is trying to start the show
-            if (!String.IsNullOrWhiteSpace(txtDirectory.Text) && btnShow.Text != "Pause")
-            {
-                //lock down the controls (except the interval selector), enable full screen
-                //mode, start the timer, and show the first image
-                startSlideShow();
-            }
-            else
-            {
-                //otherwise reset the controls back to the initial state
-                stopSlideShow();
-            }
-        }
-
-        private void btnFullScreen_Click(object sender, EventArgs e)
-        {
-            // create a new full screen instance and put the current image into it
-            fullScreenImage = new FullScreenImage(this);
-            fullScreenImage.FileLocation = pictureBox.ImageLocation;
-            fullScreenImage.Location = this.Location;
-
-            fullScreenImage.Show();
-        }
-
-        public void btnBack_Click(object sender, EventArgs e)
+        public void btnBackClicked()
         {
             stopSlideShow();
-            showFromButtons();
+            pornHoleView.showFromButtons();
+            fullScreenImageView.showFromButtons();
 
             // if we don't have a manual "browsing" node, make it from the current one
             if (manualNode == null)
@@ -257,17 +291,16 @@ namespace WindowsFormsApplication1
                 }
             }
 
-            pictureBox.ImageLocation = manualNode.Value.ImagePath;
-            if (fullScreenImage != null)
-            {
-                fullScreenImage.FileLocation = manualNode.Value.ImagePath;
-            }
+            pornHoleView.setImage(manualNode.Value.ImagePath);
+            fullScreenImageView.setImage(manualNode.Value.ImagePath);
         }
 
-        public void btnNext_Click(object sender, EventArgs e)
+        public void btnNextClicked()
         {
             stopSlideShow();
-            showFromButtons();
+            pornHoleView.showFromButtons();
+            fullScreenImageView.showFromButtons();
+
             // if we don't have a manual "browsing" node, make it from the current one
             if (manualNode == null)
             {
@@ -288,103 +321,34 @@ namespace WindowsFormsApplication1
             //TODO: clicking NEXT from the currentImageList.Last generates new list instead of stopping?
             //what happens if we try to go past the end of the new list?
 
-            pictureBox.ImageLocation = manualNode.Value.ImagePath;
-            if (fullScreenImage != null)
+            pornHoleView.setImage(manualNode.Value.ImagePath);
+            fullScreenImageView.setImage(manualNode.Value.ImagePath);
+        }
+
+        public void btnPlayPauseClicked()
+        {
+            // If a directory has been selected and the user is trying to start the show
+            if (!String.IsNullOrWhiteSpace(newDir) && !showPlaying)
             {
-                fullScreenImage.FileLocation = manualNode.Value.ImagePath;
+                startSlideShow();
             }
-        }
-
-        public void btnFromPaused_Click(object sender, EventArgs e)
-        {
-            startSlideShow();
-        }
-
-        public void btnFromHere_Click(object sender, EventArgs e)
-        {
-            currentNode = manualNode;
-            startSlideShow();
+            else
+            {
+                stopSlideShow();
+            }
         }
 
         #endregion
 
         #region Other Event Handlers
 
-        private void folderBrowser_FileOk(object sender, CancelEventArgs e)
-        {
-            //when a folder is selected, put the path in the textbox
-            txtDirectory.Text = Path.GetDirectoryName(folderBrowser.FileName);
-        }
-
-        private void numInterval_ValueChanged(object sender, EventArgs e)
-        {
-            // change the interval between images
-            //timer.Stop();
-            timer.Interval = ((int)numInterval.Value) * 1000;
-            //timer.Start();
-        }
-
         private void timer_Tick(object sender, EventArgs e)
         {
-            // when the timer expires, show the next image
             showNextImage();
         }
 
-        #endregion
-
-        #region Supporting Functions
-
-        private void startSlideShow()
-        {
-            btnShow.Text = "Pause";
-            if (fullScreenImage != null)
-            {
-                fullScreenImage.setBtnShowText("||");
-                fullScreenImage.showFromButtons = false;
-            }
-            btnShow.Visible = true;
-            btnFromHere.Visible = false;
-            btnFromPaused.Visible = false;
-            btnFullScreen.Enabled = true;
-            txtDirectory.Enabled = false;
-            btnSelectFolder.Enabled = false;
-            chkSubdirs.Enabled = false;
-            if (currentNode == null)
-            {
-                showNextImage();
-            }
-            timer.Start();
-        }
-
-        private void stopSlideShow()
-        {
-            timer.Stop();
-            btnShow.Text = "Resume";
-            if (fullScreenImage != null)
-            {
-                fullScreenImage.setBtnShowText("▷");
-            }
-            btnFullScreen.Enabled = false;
-            txtDirectory.Enabled = true;
-            btnSelectFolder.Enabled = true;
-            chkSubdirs.Enabled = true;
-        }
-
-        private void showFromButtons()
-        {
-            btnShow.Visible = false;
-            btnFromHere.Visible = true;
-            btnFromPaused.Visible = true;
-            if (fullScreenImage != null)
-            {
-                fullScreenImage.showFromButtons = true;
-            }
-        }
+        
 
         #endregion
-
-
-
-
     }
 }
