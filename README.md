@@ -1,4 +1,4 @@
-# Porn-Hole
+# Porn Hole
 
 Porn Hole is just an image slide show, intended to be displayed at large or small group gatherings where that might be appropriate.
 
@@ -22,17 +22,22 @@ Or not porn, as appropriate.
 
 But really just porn.
 
-I am fully aware that--on top of being completely amateur in design--there are a number of coding atrocities herein.
-I am a back-end programmer. I work with micro-services and data. I know just enough about front-end coding to get myself into
-trouble. As you can see.
+I am fully aware that--on top of being completely amateur in design--there are a number of coding atrocities herein. I am services programmer by trade. I know just enough about desktop app coding to get myself into trouble. As you can see.
 
-I apologize for nothing. This does what I need it to do. If you wanna do it up right, be my guest.
+I apologize for nothing. This does what I need it to do. 
 
 Anyway, this is v1.1, which addressed some things beyond those initial 4 requirements.
+  * An assortment of fatal bug fixes.
+  * Opens the full screen view on the same screen as the controller.
+  * Added some manual forward and back navigation.
 
-* An assortment of fatal bug fixes.
-* Opens the full screen view on the same screen as the controller.
-* Added some manual forward and back navigation.
-
-A future nice-to-have would be the ability to share the current image to email/Twitter/Telegram/whatever. Dunno if I'll ever
-get to that. But there you go.
+Possible Enhancements:
+  * Make a proper back-end and separate it from the UI (in progress)
+  * Upgrade directory picker to allow picking multiple directories
+  * Look at upgrading whole project to a newer format (WPF?)
+  * Clean up full-screen controls, 'cause they be ugly
+  * Let's be honest, the main controller could look 100x better, too
+  * Ability to pick which screen full-screen appears on
+  * Allow different sorts (by date, by filename, don't re-randomize with every new loop through the files, "true" random (where you don't loop the files at all))
+  * Ability to share the current image to email/Twitter/Telegram/whatever.
+    * A half-way point to this may be the ability to show the file name/location or even open the containing directory with the file selected.
