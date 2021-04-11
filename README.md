@@ -37,7 +37,8 @@ I apologize for nothing. This does what I need it to do.
 ### v1.2
   * Updated to basic MVC implementation
 
-Possible Enhancements:
+
+##### Possible Enhancements:
   * ~~Make a proper back-end and separate it from the UI~~
   * Upgrade directory picker to allow picking multiple directories
   * Look at upgrading whole project to a newer framework (WPF?)
