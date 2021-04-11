@@ -1,4 +1,4 @@
-# Porn Hole
+# Porn Hole v1.2
 
 Porn Hole is just an image slide show, intended to be displayed at large or small group gatherings where that might be appropriate.
 
@@ -26,15 +26,21 @@ I am fully aware that--on top of being completely amateur in design--there are a
 
 I apologize for nothing. This does what I need it to do. 
 
-Anyway, this is v1.1, which addressed some things beyond those initial 4 requirements.
+### v1.0
+  * The 4 requirements listed above
+ 
+### v1.1
   * An assortment of fatal bug fixes.
   * Opens the full screen view on the same screen as the controller.
   * Added some manual forward and back navigation.
 
+### v1.2
+  * Updated to basic MVC implementation
+
 Possible Enhancements:
-  * Make a proper back-end and separate it from the UI (in progress)
+  * ~~Make a proper back-end and separate it from the UI~~
   * Upgrade directory picker to allow picking multiple directories
-  * Look at upgrading whole project to a newer format (WPF?)
+  * Look at upgrading whole project to a newer framework (WPF?)
   * Clean up full-screen controls, 'cause they be ugly
   * Let's be honest, the main controller could look 100x better, too
   * Ability to pick which screen full-screen appears on
