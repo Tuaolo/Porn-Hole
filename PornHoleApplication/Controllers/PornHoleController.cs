@@ -343,6 +343,24 @@ namespace PornHole.Controllers
             }
         }
 
+        public void btnOpenFileClicked()
+        {
+            String imagePath = "";
+            if (manualNode != null)
+            {
+                imagePath = manualNode.Value.ImagePath;
+            }
+            else if (currentNode != null)
+            {
+                imagePath = currentNode.Value.ImagePath;
+            }
+
+            if (!"".Equals(imagePath))
+            {
+                System.Diagnostics.Process.Start("explorer.exe", string.Format("/select,\"{0}\"", imagePath));
+            }
+        }
+
         #endregion
 
         #region Other Event Handlers
