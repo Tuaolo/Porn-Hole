@@ -36,6 +36,9 @@ I apologize for nothing. This does what I need it to do.
 
 ### v1.2
   * Updated to basic MVC implementation
+  
+### v1.3
+  * Open Explorer with current image selected
 
 
 ##### Possible Enhancements:
@@ -47,4 +50,4 @@ I apologize for nothing. This does what I need it to do.
   * Ability to pick which screen full-screen appears on
   * Allow different sorts (by date, by filename, don't re-randomize with every new loop through the files, "true" random (where you don't loop the files at all))
   * Ability to share the current image to email/Twitter/Telegram/whatever.
-    * A half-way point to this may be the ability to show the file name/location or even open the containing directory with the file selected.
+    * ~~A half-way point to this may be the ability to show the file name/location or even open the containing directory with the file selected.~~
