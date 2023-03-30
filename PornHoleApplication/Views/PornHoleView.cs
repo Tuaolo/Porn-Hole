@@ -104,6 +104,11 @@ namespace PornHole.Views
             controller.startSlideShowFromHere();
         }
 
+        private void btnOpenFile_Click(object sender, EventArgs e)
+        {
+            controller.btnOpenFileClicked();
+        }
+
         #endregion
 
         #region Other Event Handlers

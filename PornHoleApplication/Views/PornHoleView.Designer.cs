@@ -28,8 +28,10 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PornHoleView));
             this.panel1 = new System.Windows.Forms.Panel();
+            this.btnOpenFile = new System.Windows.Forms.Button();
             this.lblExitFullScreen = new System.Windows.Forms.Label();
             this.btnFromPaused = new System.Windows.Forms.Button();
             this.btnFromHere = new System.Windows.Forms.Button();
@@ -45,6 +47,7 @@
             this.numInterval = new System.Windows.Forms.NumericUpDown();
             this.pictureBox = new System.Windows.Forms.PictureBox();
             this.folderBrowser = new System.Windows.Forms.OpenFileDialog();
+            this.ttpOpenFile = new System.Windows.Forms.ToolTip(this.components);
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numInterval)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox)).BeginInit();
@@ -52,6 +55,7 @@
             // 
             // panel1
             // 
+            this.panel1.Controls.Add(this.btnOpenFile);
             this.panel1.Controls.Add(this.lblExitFullScreen);
             this.panel1.Controls.Add(this.btnFromPaused);
             this.panel1.Controls.Add(this.btnFromHere);
@@ -71,6 +75,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(316, 296);
             this.panel1.TabIndex = 0;
+            // 
+            // btnOpenFile
+            // 
+            this.btnOpenFile.BackgroundImage = global::PornHole.Properties.Resources.Hopstarter_Soft_Scraps_Folder_Open_256;
+            this.btnOpenFile.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.btnOpenFile.Location = new System.Drawing.Point(5, 260);
+            this.btnOpenFile.Name = "btnOpenFile";
+            this.btnOpenFile.Size = new System.Drawing.Size(30, 30);
+            this.btnOpenFile.TabIndex = 13;
+            this.ttpOpenFile.SetToolTip(this.btnOpenFile, "Open File in Folder");
+            this.btnOpenFile.UseVisualStyleBackColor = true;
+            this.btnOpenFile.Click += new System.EventHandler(this.btnOpenFile_Click);
             // 
             // lblExitFullScreen
             // 
@@ -275,6 +291,8 @@
         private System.Windows.Forms.Button btnFromPaused;
         private System.Windows.Forms.Button btnFromHere;
         private System.Windows.Forms.Label lblExitFullScreen;
+        private System.Windows.Forms.Button btnOpenFile;
+        private System.Windows.Forms.ToolTip ttpOpenFile;
     }
 }
 
