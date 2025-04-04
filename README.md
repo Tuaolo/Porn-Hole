@@ -51,3 +51,4 @@ I apologize for nothing. This does what I need it to do.
   * Allow different sorts (by date, by filename, don't re-randomize with every new loop through the files, "true" random (where you don't loop the files at all))
   * Ability to share the current image to email/Twitter/Telegram/whatever.
     * ~~A half-way point to this may be the ability to show the file name/location or even open the containing directory with the file selected.~~
+  * Resolution control? (casting from an ultrawide to a TV currently requires changing monitor resolution to make it look right)
